@@ -1,0 +1,23 @@
+{
+  "name": "spa-jquery",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abrachist/spa-jquery.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/abrachist/spa-jquery/issues"
+  },
+  "homepage": "https://github.com/abrachist/spa-jquery#readme",
+  "dependencies": {
+    "jquery": "^3.2.1"
+  }
+}
