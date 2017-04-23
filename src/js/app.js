@@ -30,7 +30,7 @@ $(function(){
 				response.data.forEach(function(item,index) {
 					index++;
 					tbodyElem.append('<tr>' +
-							'<td id="'+item.id+'" class="id">'+ index +'</td>'+
+							'<td id="'+item.id+'" class="id">'+ item.id +'</td>'+
 							'<td><input type="text" class="art-title" value="'+ item.title +'"></input></td>'+
 							'<td><input type="text" class="art-body" value="'+ item.body +'"></input></td>'+
 							'<td>'+
@@ -39,6 +39,13 @@ $(function(){
 							'</td>'+
 						'</tr>');
 				});
+
+				$("#pagination").html('<p>'+
+									'<button class="page" id="http://apidev.app/api/lesson"> << </button>'+
+							     	'<button class="page" id="'+ response.paginator.prev_page +'"> < </button>'+
+							     	'<button class="page" id="'+ response.paginator.next_page +'"> > </button>'+
+							     	'<button class="page" id="'+ "http://apidev.app/api/lesson/?page=" + response.paginator.last_page +'"> >> </button>'+
+							   	'</p>');
 			},
 			error: function(err) {
 				localStorage.removeItem("token");
@@ -46,6 +53,64 @@ $(function(){
 			}
 		});
 	});
+
+	// FUNCTION FOR PAGINATION
+	$("body").on("click", ".page", function() {
+		var token = localStorage.getItem("token");
+		var pageUrl = $(this).attr('id');
+
+		if(!pageUrl==null) 
+		{
+			$.ajax ({
+			url: pageUrl,
+			contentType: "application/json",
+        	headers: {
+        		'Authorization':'Bearer '+token,
+		        'X-Requested-With':'XMLHttpRequest',
+		    },
+			success: function(response) {
+
+				var theadElem = $("thead");
+				theadElem.html('');
+
+				var tbodyElem = $("tbody");
+				tbodyElem.html('');
+
+				theadElem.append('<tr>'+
+									'<th>No</th>'+
+									'<th>Title</th>'+
+									'<th>Body</th>'+
+									'<th>Action</th>'+
+								'</tr>');
+
+				response.data.forEach(function(item,index) {
+					index++;
+					tbodyElem.append('<tr>' +
+							'<td id="'+item.id+'" class="id">'+ item.id +'</td>'+
+							'<td><input type="text" class="art-title" value="'+ item.title +'"></input></td>'+
+							'<td><input type="text" class="art-body" value="'+ item.body +'"></input></td>'+
+							'<td>'+
+								'<button class="update-data">Update</button>'+
+							    '<button class="delete-data">Delete</button>'+
+							'</td>'+
+						'</tr>');
+				});
+
+				$("#pagination").html('<p>'+
+									'<button class="page" id="http://apidev.app/api/lesson"> << </button>'+
+							     	'<button class="page" id="'+ response.paginator.prev_page +'"> < </button>'+
+							     	'<button class="page" id="'+ response.paginator.next_page +'"> > </button>'+
+							     	'<button class="page" id="'+ "http://apidev.app/api/lesson/?page=" + response.paginator.last_page +'"> >> </button>'+
+							   	'</p>');
+			},
+			error: function(err) {
+				localStorage.removeItem("token");
+				getAuth();
+			}
+			});
+		}	
+	});
+
 
 	// SHOW CREATE FORM 
 	$("body").on("click", "#show-create-form", function() {
@@ -185,7 +250,9 @@ $(function(){
 	function getAuth() {
 		if (typeof(Storage) !== "undefined") {
 		    user = prompt("Please enter your name:", "");
-	        password = prompt("Please enter your password:", "");
+		    if(user != "" && user != null) {
+	        	password = prompt("Please enter your password:", "");
+		    }
 
 	        if (user != "" && user != null && password != "" && password != null) {
 	        	var data = {"email": user, "password": password };
